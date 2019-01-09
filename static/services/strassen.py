@@ -71,7 +71,6 @@ class Strassen:
 
             # Compute Aij, Bij, matrices n/2 x n/2, n > 2
             a11, a12, a21, a22 = self.split(a, a_size)
-            print a11, a12, a21, a22
             b11, b12, b21, b22 = self.split(b, b_size)
 
             # Compute qk recursively
