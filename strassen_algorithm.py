@@ -33,8 +33,8 @@ def strassen(a, b):
     b_size = b.size
 
     # Error handling
-    if a_size != b_size:
-        return "Error: matrices to multiply must have the same size."
+    if (a_size != b_size) or (not a_size or not b_size):
+        return "Error: matrices to multiply must have the same size, and must not be empty."
 
     # Track level of recursion for timer start and stop
     # Beginning detection
