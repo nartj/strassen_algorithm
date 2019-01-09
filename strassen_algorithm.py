@@ -37,6 +37,7 @@ def strassen(a, b):
         return "Error: matrices to multiply must have the same size, and must not be empty."
 
     # Track level of recursion for timer start and stop
+    level += 1
     # Beginning detection
     if not level:
         start_time = time.time()
@@ -51,10 +52,10 @@ def strassen(a, b):
     # If matrices size > 1
     else:
         # Odd dimension matrices handling
-        if (a_size % 2) != 0:
+        if (sqrt(a_size) % 2) != 0:
             a, b = complete_with_zeros(a, b)
 
-        # Compute Aij, Bij, matrices n/2 x n/2, n > 0
+        # Compute Aij, Bij, matrices n/2 x n/2, n > 2
         a11, a12, a21, a22 = split(a)
         b11, b12, b21, b22 = split(b)
 
