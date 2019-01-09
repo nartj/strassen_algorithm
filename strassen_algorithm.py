@@ -7,9 +7,13 @@ import numpy as np
 from math import sqrt
 import time
 
+# multiplication counter
 counter = 0
+# level of recursion
 level = -1
+# start of computing instant
 start_time = 0
+# end of computing instant
 elapsed_time = 0
 
 
@@ -18,16 +22,11 @@ def strassen(a, b):
     strassen(a, b) multiply two square matrix a and b of the same size
     and return the result matrix
     Each integer multiplication done is counted by the global variable counter
-    :arg a matrix n x n, n > 0
-    :arg b matrix n x n, n > 0
+    :param a matrix n x n, n > 0
+    :param b matrix n x n, n > 0
     :return c the result matrix
     """
     global counter, level, start_time, elapsed_time
-
-    # Track level of recursion for timer start and stop
-    level += 1
-    if not level:
-        start_time = time.time()
 
     # Storing size of matrices
     a_size = a.size
@@ -37,21 +36,28 @@ def strassen(a, b):
     if a_size != b_size:
         return "Error: matrices to multiply must have the same size."
 
-    # If matrices size = 1 just do multiply and increment counter
+    # Track level of recursion for timer start and stop
+    # Beginning detection
+    if not level:
+        start_time = time.time()
+
+    # If input are integers just multiply them
+    # and increment global multiplication counter
     if a_size == 1:
         counter += 1
         level -= 1
         return a * b
 
-    # Odd dimension handling
-    if (a_size % 2) != 0:
-        a, b = complete_with_zeros(a, b)
-
     # If matrices size > 1
     else:
+        # Odd dimension matrices handling
+        if (a_size % 2) != 0:
+            a, b = complete_with_zeros(a, b)
+
         # Compute Aij, Bij, matrices n/2 x n/2, n > 0
         a11, a12, a21, a22 = split(a)
         b11, b12, b21, b22 = split(b)
+
         # Compute qk recursively
         q1 = strassen(a11 - a12, b22)
         q2 = strassen(a21 - a22, b11)
@@ -60,30 +66,37 @@ def strassen(a, b):
         q5 = strassen(a11 + a22, b22 - b11)
         q6 = strassen(a11 + a21, b11 + b12)
         q7 = strassen(a12 + a22, b21 + b22)
+
         # Compute Cij thanks to Strassen formulas
         c11 = q1 - q3 - q5 + q7
         c12 = q4 - q1
         c21 = q2 + q3
         c22 = - q2 - q4 + q5 + q6
+
         # Create an array of matrices n/2 x n/2
         matrix = np.array([[c11, c12], [c21, c22]])
-        if matrix.size == 4:
-            result = matrix
-        else:
-            result = np.concatenate(
+
+        # if matrix is not 2 x 2 then rebuild the matrix properly
+        # TODO: Might be refactorable by using concatenate instead of array above
+        if matrix.size != 4:
+            matrix = np.concatenate(
                 (np.concatenate((matrix[0][0], matrix[0][1]), axis=1),
                  np.concatenate((matrix[1][0], matrix[1][1]), axis=1))
                 , axis=0)
+
+        # End detection
         if not level:
             elapsed_time = time.time() - start_time
 
         level -= 1
-        return result
+        return matrix
 
 
 def split(matrix):
     """
     Split matrix into four sub-matrices.
+    :param matrix the matrix of size 2n x 2n to split
+    :return 4 matrices of size n x n
     """
     size = matrix.size
     if size == 4:
@@ -97,6 +110,9 @@ def split_matrix_in_four(matrix, dim):
     """
      Split a matrix into sub-matrices.
      source: https://stackoverflow.com/questions/16856788/slice-2d-array-into-smaller-2d-arrays
+     :param matrix the matrix of size 2n x 2n to split
+     :param dim the dimension of the matrix (2n)
+     :return an array 4 matrices of size n x n
     """
     h, w = matrix.shape
     return (matrix.reshape(h // dim, dim, -1, dim)
@@ -120,12 +136,14 @@ def add_zeros_row_and_column_to_matrix(matrix):
     """
     Add a row and a column of zeros to a matrix
     :param matrix: the matrix to be modified
-    :return: the matrix with a row and a column of zeros supplementary
+    :return: the matrix with a row and a column of zeros added
     """
     size = int(sqrt(matrix.size))
     zeros_line = np.array([np.zeros((size,), dtype=int)])
     zeros_column = np.zeros((size + 1, 1), dtype=int)
+    # Add zeros line to the bottom of the matrix
     completed = np.concatenate((matrix, zeros_line), axis=0)
+    # Add zeros column to the bottom of the matrix and return it
     return np.concatenate((completed, zeros_column), axis=1)
 
 
