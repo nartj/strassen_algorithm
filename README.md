@@ -15,16 +15,15 @@ Use Flask python micro-framework as built-in server
     - Install Flask
         - http://flask.pocoo.org/
             - pip install Flask
-            - set FLASK_APP=strassen_algorithm.py
             
     - Install numpy
         - pip install numpy
     
     - Run python server
+        - set FLASK_APP=strassen_demo.py
         - flask run
-          
+            
     - Enjoy at http://127.0.0.1:5000/strassen 
-
 
 # TODO
 - Implement classical matrices multiplication algorithm
