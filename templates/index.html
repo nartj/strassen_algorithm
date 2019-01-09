@@ -9,27 +9,41 @@
 </head>
 <body>
     <div id="container">
-      <div id="matrix-A" data-for="A" class="matrix-table-container matrix-with-braces"></div>
-      <div class="symbol"><span>&times;</span></div>
-      <div id="matrix-B" data-for="B" class="matrix-table-container matrix-with-braces"></div>
-      <div class="symbol"><span>=</span></div>
-      <div id="matrix-C" data-for="C" class="matrix-table-container matrix-with-braces"></div>
+        <div class="matrix-container">
+            <div id="matrix-A" data-for="A" class="matrix-table-container matrix-with-braces"></div>
+        </div>
+        <div class="matrix-container">
+            <div class="symbol"><span>&times;</span></div>
+        </div>
+        <div class="matrix-container">
+            <div id="matrix-B" data-for="B" class="matrix-table-container matrix-with-braces"></div>
+        </div>
+        <div class="matrix-container">
+            <div class="symbol"><span>=</span></div>
+        </div>
+        <div class="matrix-container">
+            <div id="matrix-C" data-for="C" class="matrix-table-container matrix-with-braces"></div>
+        </div>
     </div>
 
-    <button id="btn-random" type="button">Random</button>
-    <button id="btn-clear" type="button">Clear</button>
-    <button id="btn-calc" type="button">Calculate</button>
+    <div id="button-container">
+        <button id="btn-random" type="button">Random</button>
+        <button id="btn-clear" type="button">Clear</button>
+        <button id="btn-calc" type="button">Calculate</button>
+    </div>
 
-    <div hidden id="statistics">
-        <h2>Statistics</h2>
-      <div id="time-container">
-          <h3>Strassen computation time: </h3>
-          <p id="strassen-computation-time"></p>
-      </div>
-      <div id="multiplication-counter-container">
-        <h3>Strassen multiplication counter: </h3>
-          <p id="strassen-multiplication-counter"></p>
-      </div>
+    <div id="statistics">
+        <div hidden id="hidden">
+            <h2>Statistics</h2>
+            <div id="time-container">
+                <h3>Strassen computation time: </h3>
+                <p id="strassen-computation-time"></p>
+            </div>
+            <div id="multiplication-counter-container">
+                <h3>Strassen multiplication counter: </h3>
+                <p id="strassen-multiplication-counter"></p>
+            </div>
+        </div>
     </div>
 </body>
 <script type="text/javascript" src="{{ url_for('static', filename='js/matrices.js') }}"></script>

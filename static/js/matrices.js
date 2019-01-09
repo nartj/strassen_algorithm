@@ -1,4 +1,3 @@
-/* INTERFACE */
 let matrix_size = 2;
 let matrix_a = [];
 let matrix_b = [];
@@ -6,22 +5,21 @@ let matrix_c = [];
 let strassen_computation_time = -1;
 let strassen_multiplication_counter = -1;
 
-/* DAT GUI Init*/
 let FizzyText = function() {
   this.matrix_size = matrix_size
 };
 
 $(document).ready(function(){
-    setMatrix(matrix_size);
+    initMatrix(matrix_size);
     let fizzyText = new FizzyText();
     let gui = new dat.GUI();
     let matrixSizeController = gui.add(fizzyText,
-        'matrix_size', matrix_size).min(2).max(128).step(1).name('Matrix size').listen();
+        'matrix_size', matrix_size).min(2).max(64).step(1).name('Matrix size').listen();
     gui.open();
 
     matrixSizeController.onChange(function(value) {
         matrix_size = value;
-        setMatrix(value);
+        initMatrix(value);
     });
 
 });
@@ -35,27 +33,24 @@ function handleInput(element) {
     console.log(matrix_a);
 }
 
-function setMatrix(value) {
-    setMatrixInterface(value);
-    setMatrixData(value);
+function initMatrix(value) {
+    setMatrixHtmlTemplate(value);
+    resetMatrixData(value);
 }
 
-function setMatrixInterface(value) {
+function setMatrixHtmlTemplate(value) {
   $(".matrix-table-container").each(function() {
       let name = this.getAttribute('data-for');
       let table = '<table class="matrix-table"><tbody>';
       for (let i = 0; i < parseInt(value); i++) {
-          table += '<tr data-for="'+name+'" data-row="'+i+'">';
+          table += '<tr data-for="' + name+'" data-row="' + i + '">';
           for (let j = 0; j < parseInt(value); j++) {
               let cell_coord = name+'-'+i+'-'+j;
-              table += '<td class="matrix-table-cell"><span><input id="'
-                  + cell_coord
-                  + '" name="'
-                  + cell_coord
-                  + '" oninput="handleInput(this)" type="number" class="matrix-table-input" data-for="'
-                  + name
-                  + '" data-row="'
-                  + i +'" data-column="' + j +'"';
+              table += '<td class="matrix-table-cell"><span>'
+                  + '<input id="' + cell_coord
+                  + '" name="' + cell_coord
+                  + '" oninput="handleInput(this)" type="number" class="matrix-table-input" data-for="' + name
+                  + '" data-row="' + i +'" data-column="' + j +'"';
           if(name === 'C')
             table += " disabled";
           table += "></span></td>";
@@ -67,18 +62,21 @@ function setMatrixInterface(value) {
   });
 }
 
-/* Init the matrix values and display */
-function setMatrixData(value) {
+$('#btn-clear').click(function() {
+  resetMatrixData(matrix_size);
+});
+
+function resetMatrixData(value) {
   matrix_a = [];
   matrix_b = [];
   matrix_c = [];
 
-  for(let i=0; i<value; i++) {
+  for(let i=0; i < value; i++) {
       matrix_a[i] = [];
       matrix_b[i] = [];
       matrix_c[i] = [];
 
-      for(let j=0; j<value; j++) {
+      for(let j = 0; j < value; j++) {
           setCell('A', i, j, undefined);
           setCell('B', i, j, undefined);
           setCell('C', i, j,undefined);
@@ -90,42 +88,45 @@ $('#btn-random').click(function() {
   let min = -10;
   let max = 10;
 
-  for(let i=0; i<matrix_size; i++) {
+  for(let i = 0; i < matrix_size; i++) {
       matrix_a[i] = [];
       matrix_b[i] = [];
 
-      for(let j=0; j<matrix_size; j++) {
+      for(let j = 0; j < matrix_size; j++) {
         setCell('A', i, j,Math.floor(Math.random() * (max - min +1)) + min);
         setCell('B', i, j,Math.floor(Math.random() * (max - min +1)) + min);
       }
   }
 });
 
-$('#btn-clear').click(function() {
-  setMatrixData(matrix_size);
-});
-
-/***
- * Filled the matrix structure and display the value
- * matrixName: A, B or C
- * i: row index
- * j: column index
- * value: val to set
- **/
 function setCell(matrixName, i, j, value) {
   if(matrixName === 'A') {
     matrix_a[i][j] = parseInt(value);
-    $('#A-'+i+'-'+j).val(parseInt(value));
+    $('#A-' + i + '-' + j).val(parseInt(value));
   }
   else if (matrixName === 'B') {
     matrix_b[i][j] = parseInt(value);
-    $('#B-'+i+'-'+j).val(parseInt(value));
+    $('#B-' + i + '-' + j).val(parseInt(value));
   }
   else if (matrixName === 'C') {
     matrix_c[i][j] = parseInt(value);
-    $('#C-'+i+'-'+j).val(parseInt(value));
+    $('#C-' + i + '-' + j).val(parseInt(value));
   }
 }
+
+$('#btn-calc').click(function() {
+    console.log('sent:', [matrix_a, matrix_b]);
+    requestStrassenComputation([matrix_a, matrix_b])
+    $('html, body').animate({
+        scrollTop: $("#statistics").offset().top
+    }, 1000);
+    $(function(){
+        $('#statistics').css({ height: $(window).innerHeight() });
+        $(window).resize(function(){
+            $('#statistics').css({ height: $(window).innerHeight() });
+        });
+    });
+});
 
 function requestStrassenComputation(input) {
     $.ajax({
@@ -153,18 +154,12 @@ function requestStrassenComputation(input) {
                     "< 0 ms." : response[response.length - 2] +  " ms.";
                 let multiplication_counter_element = document.getElementById("strassen-multiplication-counter");
                 multiplication_counter_element.innerText = response[response.length - 1] + " multiplications."
-                let container = document.getElementById("statistics").hidden = false;
+                document.getElementById("hidden").hidden = false;
             });
         }
     });
 
 
 }
-
-// Post matrix button
-$('#btn-calc').click(function() {
-    console.log('sent:', [matrix_a, matrix_b]);
-    requestStrassenComputation([matrix_a, matrix_b])
-});
 
 //https://gist.github.com/aybabtme/7567536

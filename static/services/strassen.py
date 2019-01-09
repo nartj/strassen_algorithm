@@ -66,7 +66,6 @@ class Strassen:
             # Odd dimension matrices handling
             if log(a_size)/log(2) % 1 != 0:
                 a, b, new_size = self.complete_with_zeros(a, b, a_size)
-                a_size = previous_size
                 a_size, b_size = new_size, new_size
 
             # Compute Aij, Bij, matrices n/2 x n/2, n > 2
@@ -126,8 +125,9 @@ class Strassen:
     @staticmethod
     def split_matrix_in_four(matrix, dim):
         """
-         Split a matrix into sub-matrices.
+         Split a matrix into four sub-matrices
          source: https://stackoverflow.com/questions/16856788/slice-2d-array-into-smaller-2d-arrays
+
          :param matrix the matrix of size 2n x 2n to split
          :param dim the dimension of the matrix (2n)
          :return an array 4 matrices of size n x n
@@ -139,13 +139,13 @@ class Strassen:
 
     def complete_with_zeros(self, m1, m2, size):
         """
-        Complete matrices having odd size into even size
+        Complete matrices which sizes are not 2^k form, k natural integer
         by adding to each of them a line and a column of zeros
 
         :param m1: a matrix (2n + 1) x (2n + 1), n > 1
         :param m2: another matrix (2n + 1) x (2n + 1), n > 1
         :param size: the size of m1 and m2
-        :return: matrices m1 and m2 completed
+        :return: matrices m1 and m2 completed until their size are 2^k form
         """
         new_size = size
         while log(new_size) / log(2) % 1 != 0:
@@ -155,11 +155,11 @@ class Strassen:
     @staticmethod
     def add_zeros_rows_and_columns(matrix, size, new_size):
         """
-        Add a row and a column of zeros to a matrix
-        :param matrix: the matrix to be modified
+        Add (new_size - size) rows and columns of zeros to a matrix beginning by right bottom sides
+        :param matrix: the matrix to be completed of zeros
         :param size: the matrix size
         :param new_size: the completed matrix size
-        :return: the matrix with a row and a column of zeros added
+        :return: the matrix with (new_size - size) rows and columns of zeros added
         """
         for i in range(0, new_size - size):
             zeros_line = np.array([np.zeros((size + i,), dtype=int)])
@@ -175,7 +175,7 @@ class Strassen:
     @staticmethod
     def remove_added_zeros(matrix, actual_size, nb_rows_to_remove):
         """
-        Add a row and a column of zeros to a matrix
+        Remove nb_rows_to_remove rows and a columns of zeros to a matrix beginning by right and bottom sides
         :param matrix: the matrix to be modified
         :param actual_size: the size of the matrix to be modified
         :param nb_rows_to_remove: the number of rows and columns to remove
