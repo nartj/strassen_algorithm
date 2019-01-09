@@ -5,7 +5,7 @@ Use Flask python micro-framework as built-in server
 # Getting started
 * Prerequisite
     - Python 2.7 or later version
-    - PythonX.X/ et PythonX.X/Scripts/ in environment variables
+    
 * Install and run
     - Clone the repository
     - Install 
@@ -18,7 +18,7 @@ Use Flask python micro-framework as built-in server
             - set FLASK_APP=strassen_algorithm.py
             
     - Install numpy
-            - pip install numpy
+        - pip install numpy
     
     - Run python server
         - flask run
