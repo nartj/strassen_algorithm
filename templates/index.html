@@ -32,16 +32,24 @@
         <button id="btn-calc" type="button">Calculate</button>
     </div>
 
-    <div id="statistics">
+    <div id="statistics" hidden>
+        <h2>Statistics</h2>
         <div hidden id="hidden">
-            <h2>Statistics</h2>
-            <div id="time-container">
+            <div id="strassen-time-container" class="stats-items">
                 <h3>Strassen computation time: </h3>
                 <p id="strassen-computation-time"></p>
             </div>
-            <div id="multiplication-counter-container">
+            <div id="strassen-multiplication-counter-container" class="stats-items">
                 <h3>Strassen multiplication counter: </h3>
                 <p id="strassen-multiplication-counter"></p>
+            </div>
+            <div id="classical-time-container" class="stats-items">
+                <h3>Classical computation time: </h3>
+                <p id="classical-computation-time"></p>
+            </div>
+            <div id="classical-multiplication-counter-container" class="stats-items">
+                <h3>Classical multiplication counter: </h3>
+                <p id="classical-multiplication-counter"></p>
             </div>
         </div>
     </div>

@@ -69,19 +69,26 @@ input[type=number] {
     width: 80%;
     margin-right: 10%;
     margin-left: auto;
-    padding: 2em;
 }
 
-#time-container {
-    width: 45%;
-    padding: 2em;
-    float: left;
-    position: relative;
+.stats-items{
+    width: 20%;
+    padding: 1em;
+    margin: 0.5em;
+    -webkit-box-shadow: 0px 3px 12px -4px rgba(8,8,8,0.81);
+    -moz-box-shadow: 0px 3px 12px -4px rgba(8,8,8,0.81);
+    box-shadow: 0px 3px 12px -4px rgba(8,8,8,0.81);
 }
 
-#multiplication-counter-container {
-    width: 45%;
-    padding: 2em;
-    float: right;
-    position: relative;
+#hidden {
+    display: flex;
+    flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-box-orient: horizontal;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -moz-flex;
+    display: -webkit-flex;
 }

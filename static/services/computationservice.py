@@ -9,15 +9,15 @@ from math import log
 import time
 
 
-class Strassen:
-    # multiplication counter
-    counter = 0
-    # level of recursion
-    level = -1
+class ComputationService:
+    # multiplication counter using strassen algorithm
+    classical_mult_cnt = 0
+    # multiplication counter using classical algorithm
+    strassen_mult_cnt = 0
     # start of computing instant
-    start_time = 0
-    # end of computing instant
-    elapsed_time = 0
+    classical_comp_time = 0
+    # computation time using strassen algorithm
+    strassen_comp_time = 0
     # result matrix
     result = []
 
@@ -25,61 +25,101 @@ class Strassen:
         self.result = self.compute(matrix_a, matrix_b)
 
     def get_result(self):
-        return self.result, self.elapsed_time, self.counter
+        return self.result, self.strassen_comp_time, self.strassen_mult_cnt, self.classical_comp_time, self.classical_mult_cnt
 
     def compute(self, a, b):
         """
         compute(a, b) multiply two square matrix a and b of the same size
         and return the result matrix
-        Each integer multiplication done is counted by the global variable counter
+        The computations are done following Strassen algorithm, then following classical matrices multiplication
+        algorithm (Sum(AikBkj)).
+
         :param a matrix n x n, n > 0
         :param b matrix n x n, n > 0
         :return c the result matrix
         """
-
         # Storing size of matrices
         a_size = int(sqrt(a.size))
         b_size = int(sqrt(b.size))
-        new_size = 0
-        previous_size = a_size
 
         # Error handling
         if (a_size != b_size) or (not a_size or not b_size):
             return "Error: matrices to multiply must have the same size, and must not be empty."
 
-        # Track level of recursion for timer start and stop
-        self.level += 1
-        # Beginning detection
-        if not self.level:
-            print 'Request for computing', a_size, 'x', b_size, 'matrices multiplication.'
-            self.start_time = time.time()
+        new_size = 0
+        previous_size = a_size
+
+        # Odd dimension matrices handling for Strassen algorithm
+        if log(a_size) / log(2) % 1 != 0:
+            a, b, new_size = self.complete_with_zeros(a, b, a_size)
+            a_size = new_size
+
+        print 'Request for computing', a_size, 'x', a_size, 'matrices multiplication.'
+
+        # Compute result matrix using strassen algorithm implementation
+        start_time = time.time()
+        result = self.compute_using_strassen(a, b)
+
+        self.strassen_comp_time = time.time() - start_time
+        print 'Strassen computation realised in', self.strassen_comp_time, 'seconds.'
+
+        # Remove added zeros rows and columns before starting classical algorithm
+        if new_size != 0:
+            self.result = self.remove_added_zeros(result, new_size, new_size - previous_size)
+            a = self.remove_added_zeros(a, new_size, new_size - previous_size)
+            b = self.remove_added_zeros(b, new_size, new_size - previous_size)
+        else:
+            self.result = result
+
+        # Compute result matrix using classical algorithm implementation
+        start_time = time.time()
+        result = self.classical_compute(a, b)
+
+        self.classical_comp_time = time.time() - start_time
+        print 'Classical computation realised in', self.classical_comp_time, 'seconds.'
+
+        # Result verification
+        if not (result == self.result).all():
+            return "Error: classical and strassen algorithm returned different results."
+
+        return result
+
+    def compute_using_strassen(self, a, b):
+        """
+        Compute matrices multiplication using strassen algorithm
+        Each integer multiplication done is counted by the global variable counter
+
+        :param a: a square matrix of size n^2k
+        :param b: a square matrix of size n^2k
+        :return: the matrix result of size n^2k
+        """
+
+        size = int(sqrt(a.size))
 
         # If input are integers just multiply them
         # and increment global multiplication counter
-        if a_size == 1:
-            self.counter += 1
-            self.level -= 1
+        if size == 1:
+            self.strassen_mult_cnt += 1
             return int(a) * int(b)
 
-        # If matrices size > 1
+        # If matrices size > 1, call recursively compute_using_strassen
+        # to compute q1, q2 ..., q7 following strassen formulas
+        # until a11, a12 ... , b21, b22 are integers
+        # then just multiply them and increment multiplication counter
         else:
-            # Odd dimension matrices handling
-            if log(a_size)/log(2) % 1 != 0:
-                a, b, new_size = self.complete_with_zeros(a, b, a_size)
-                a_size, b_size = new_size, new_size
 
             # Compute Aij, Bij, matrices n/2 x n/2, n > 2
-            a11, a12, a21, a22 = self.split(a, a_size)
-            b11, b12, b21, b22 = self.split(b, b_size)
+            a11, a12, a21, a22 = self.split(a, size)
+            b11, b12, b21, b22 = self.split(b, size)
 
             # Compute qk recursively
-            q1 = self.compute(a11 - a12, b22)
-            q2 = self.compute(a21 - a22, b11)
-            q3 = self.compute(a22, b11 + b21)
-            q4 = self.compute(a11, b12 + b22)
-            q5 = self.compute(a11 + a22, b22 - b11)
-            q6 = self.compute(a11 + a21, b11 + b12)
-            q7 = self.compute(a12 + a22, b21 + b22)
+            q1 = self.compute_using_strassen(a11 - a12, b22)
+            q2 = self.compute_using_strassen(a21 - a22, b11)
+            q3 = self.compute_using_strassen(a22, b11 + b21)
+            q4 = self.compute_using_strassen(a11, b12 + b22)
+            q5 = self.compute_using_strassen(a11 + a22, b22 - b11)
+            q6 = self.compute_using_strassen(a11 + a21, b11 + b12)
+            q7 = self.compute_using_strassen(a12 + a22, b21 + b22)
 
             # Compute Cij thanks to Strassen formulas
             c11 = q1 - q3 - q5 + q7
@@ -98,16 +138,27 @@ class Strassen:
                      np.concatenate((matrix[1][0], matrix[1][1]), axis=1))
                     , axis=0)
 
-            # End detection
-            if not self.level:
-                self.elapsed_time = time.time() - self.start_time
-                print 'Computation realised in', self.elapsed_time, 'seconds.'
-                # Remove added zeros rows and columns before returning
-                if new_size != 0:
-                    matrix = self.remove_added_zeros(matrix, new_size, new_size - previous_size)
-
-            self.level -= 1
             return matrix
+
+    def classical_compute(self, a, b):
+        """
+        Compute matrices multiplication using classical algorithm (AikBkj)
+        Each integer multiplication done is counted by the global variable counter
+
+        :param a: a square matrix of size n
+        :param b: another square matrix of size n
+        :return: the matrix result of size n
+        """
+        n = np.shape(a)[0]
+        c = np.zeros((n, n))
+        for i in range(n):
+            for j in range(n):
+                s = 0
+                for k in range(n):
+                    s += a[i][k] * b[k][j]
+                    self.classical_mult_cnt += 1
+                    c[i][j] = s
+        return c
 
     def split(self, matrix, size):
         """
