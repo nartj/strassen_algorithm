@@ -26,6 +26,4 @@ Use Flask python micro-framework as built-in server
     - Enjoy at http://127.0.0.1:5000/ 
 
 # TODO
-- Make front-end look better
-- Add a inline database to store (matrix size, computation_time, nb_multiplication) for each algorithms run
-- Use a data representation framework to display simple graphics based on database data
+- Make it responsive
