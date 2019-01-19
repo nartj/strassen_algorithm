@@ -5,3 +5,5 @@ static/*.pyc
 static/__pycache__
 static/services/*.pyc
 static/services/__pycache__
+node_modules/
+package-lock.json
