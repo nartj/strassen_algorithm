@@ -1,58 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" type="text/css" href="../static/css/main.css">
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.4/dat.gui.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript"></script>
     <title>Matrices multiplication</title>
 </head>
 <body>
-    <div id="container">
-        <div class="matrix-container">
-            <div id="matrix-A" data-for="A" class="matrix-table-container matrix-with-braces"></div>
+    <div id="content">
+        <h1>Projet MT79</h1>
+        <div id="container">
+            <div class="matrix-container">
+                <div id="matrix-A" data-for="A" class="matrix-table-container matrix-with-braces"></div>
+            </div>
+            <div class="matrix-container">
+                <div class="symbol"><span>&times;</span></div>
+            </div>
+            <div class="matrix-container">
+                <div id="matrix-B" data-for="B" class="matrix-table-container matrix-with-braces"></div>
+            </div>
+            <div class="matrix-container">
+                <div class="symbol"><span>=</span></div>
+            </div>
+            <div class="matrix-container">
+                <div id="matrix-C" data-for="C" class="matrix-table-container matrix-with-braces"></div>
+            </div>
         </div>
-        <div class="matrix-container">
-            <div class="symbol"><span>&times;</span></div>
+
+        <div id="button-container">
+
+            <div class="btn-row">
+                <div class="btn-item">
+                    <a id="btn-clear" class="btn btn-3">Clear</a>
+                </div>
+                <div class="btn-item">
+                    <a id="btn-random" class="btn btn-3">Random</a>
+                </div>
+                <div class="btn-item">
+                    <a id="btn-calc" class="btn btn-3">Calculate</a>
+                </div>
+                <div class="btn-item"  id="god-mode-form" hidden>
+                    <div id="god-mode">
+                         <form>
+                            God mode size: <input type="text" id="god-mode-size">
+                        </form>
+                    </div>
+                </div>
+                <div class="btn-item">
+                    <a id="btn-god-mode" class="btn btn-3">God Mode</a>
+                </div>
+                <div class="btn-item" >
+                    <a id="btn-launch" class="btn btn-3" hidden>Launch</a>
+                </div>
+            </div>
         </div>
-        <div class="matrix-container">
-            <div id="matrix-B" data-for="B" class="matrix-table-container matrix-with-braces"></div>
-        </div>
-        <div class="matrix-container">
-            <div class="symbol"><span>=</span></div>
-        </div>
-        <div class="matrix-container">
-            <div id="matrix-C" data-for="C" class="matrix-table-container matrix-with-braces"></div>
+
+        <div id="statistics">
+            <h1>Statistics</h1>
+            <div id="hidden">
+                <div id="strassen-time-container" class="stats-items items">
+                    <h3>Strassen computation time: </h3>
+                    <p id="strassen-computation-time"></p>
+                </div>
+                <div id="classical-time-container" class="stats-items items">
+                    <h3>Classical computation time: </h3>
+                    <p id="classical-computation-time"></p>
+                </div>
+                <div id="strassen-multiplication-counter-container" class="stats-items items">
+                    <h3>Strassen multiplication counter: </h3>
+                    <p id="strassen-multiplication-counter"></p>
+                </div>
+                <div id="classical-multiplication-counter-container" class="stats-items items">
+                    <h3>Classical multiplication counter: </h3>
+                    <p id="classical-multiplication-counter"></p>
+                </div>
+                <div id="nb-mult-plot" class="plot-items items">
+                </div>
+                <div id="time-plot" class="plot-items items">
+                </div>
+            </div>
         </div>
     </div>
 
-    <div id="button-container">
-        <button id="btn-random" type="button">Random</button>
-        <button id="btn-clear" type="button">Clear</button>
-        <button id="btn-calc" type="button">Calculate</button>
-    </div>
 
-    <div id="statistics" hidden>
-        <h2>Statistics</h2>
-        <div hidden id="hidden">
-            <div id="strassen-time-container" class="stats-items">
-                <h3>Strassen computation time: </h3>
-                <p id="strassen-computation-time"></p>
-            </div>
-            <div id="strassen-multiplication-counter-container" class="stats-items">
-                <h3>Strassen multiplication counter: </h3>
-                <p id="strassen-multiplication-counter"></p>
-            </div>
-            <div id="classical-time-container" class="stats-items">
-                <h3>Classical computation time: </h3>
-                <p id="classical-computation-time"></p>
-            </div>
-            <div id="classical-multiplication-counter-container" class="stats-items">
-                <h3>Classical multiplication counter: </h3>
-                <p id="classical-multiplication-counter"></p>
-            </div>
-        </div>
-    </div>
+
+
+
+
+
 </body>
-<script type="text/javascript" src="{{ url_for('static', filename='js/matrices.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 </html>

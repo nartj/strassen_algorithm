@@ -54,14 +54,14 @@ class ComputationService:
             a, b, new_size = self.complete_with_zeros(a, b, a_size)
             a_size = new_size
 
-        print 'Request for computing', a_size, 'x', a_size, 'matrices multiplication.'
+        print('Request for computing', a_size, 'x', a_size, 'matrices multiplication.')
 
         # Compute result matrix using strassen algorithm implementation
         start_time = time.time()
         result = self.compute_using_strassen(a, b)
 
         self.strassen_comp_time = time.time() - start_time
-        print 'Strassen computation realised in', self.strassen_comp_time, 'seconds.'
+        print('Strassen computation realised in', self.strassen_comp_time, 'seconds.')
 
         # Remove added zeros rows and columns before starting classical algorithm
         if new_size != 0:
@@ -76,10 +76,12 @@ class ComputationService:
         result = self.classical_compute(a, b)
 
         self.classical_comp_time = time.time() - start_time
-        print 'Classical computation realised in', self.classical_comp_time, 'seconds.'
+        print('Classical computation realised in', self.classical_comp_time, 'seconds.')
 
         # Result verification
         if not (result == self.result).all():
+            print(self.result)
+            print(result)
             return "Error: classical and strassen algorithm returned different results."
 
         return result
@@ -93,24 +95,21 @@ class ComputationService:
         :param b: a square matrix of size n^2k
         :return: the matrix result of size n^2k
         """
-
         size = int(sqrt(a.size))
-
-        # If input are integers just multiply them
-        # and increment global multiplication counter
-        if size == 1:
-            self.strassen_mult_cnt += 1
-            return int(a) * int(b)
-
-        # If matrices size > 1, call recursively compute_using_strassen
-        # to compute q1, q2 ..., q7 following strassen formulas
-        # until a11, a12 ... , b21, b22 are integers
-        # then just multiply them and increment multiplication counter
-        else:
-
-            # Compute Aij, Bij, matrices n/2 x n/2, n > 2
-            a11, a12, a21, a22 = self.split(a, size)
-            b11, b12, b21, b22 = self.split(b, size)
+        # If a and b are matrix, split them into 4 blocks
+        # and compute q1, ..., q7 recursively
+        # then go down a recursion level
+        # until reaching gateway condition (else)
+        # then go back up to the first recursion level
+        # calculating each level a11, ..., b22 using deeper recursion levels results
+        if a.size != 1:
+            if size != 2:
+                # Compute Aij, Bij, matrices n/2 x n/2, n > 2
+                a11, a12, a21, a22 = self.split_int_four(a, size)
+                b11, b12, b21, b22 = self.split_int_four(b, size)
+            else:
+                a11, a12, a21, a22 = a[0][0], a[0][1], a[1][0], a[1][1]
+                b11, b12, b21, b22 = b[0][0], b[0][1], b[1][0], b[1][1]
 
             # Compute qk recursively
             q1 = self.compute_using_strassen(a11 - a12, b22)
@@ -127,18 +126,23 @@ class ComputationService:
             c21 = q2 + q3
             c22 = - q2 - q4 + q5 + q6
 
-            # Create an array of matrices n/2 x n/2
-            matrix = np.array([[c11, c12], [c21, c22]])
+            if size != 2:
+                # Create an array of matrices n/2 x n/2 containing c11, c12, c21, and c22
+                right = np.concatenate((c11, c21), axis=0)
+                left = np.concatenate((c12, c22), axis=0)
+                matrix = np.concatenate((right, left), axis=1)
 
-            # if matrix is not 2 x 2 then rebuild the matrix properly
-            # TODO: Might be refactorable by using concatenate instead of array above
-            if matrix.size != 4:
-                matrix = np.concatenate(
-                    (np.concatenate((matrix[0][0], matrix[0][1]), axis=1),
-                     np.concatenate((matrix[1][0], matrix[1][1]), axis=1))
-                    , axis=0)
+            else:
+                matrix = np.array([[c11, c12], [c21, c22]])
 
-            return matrix
+        # Gateway condition, deeper recursion level
+        # If input are integers just multiply them
+        # and increment global multiplication counter
+        else:
+            self.strassen_mult_cnt += 1
+            return int(a) * int(b)
+
+        return matrix
 
     def classical_compute(self, a, b):
         """
@@ -157,36 +161,19 @@ class ComputationService:
                 for k in range(n):
                     s += a[i][k] * b[k][j]
                     self.classical_mult_cnt += 1
-                    c[i][j] = s
+                    c[i][j] = int(s)
         return c
 
-    def split(self, matrix, size):
-        """
-        Split matrix into four sub-matrices.
-        :param matrix: the matrix of size 2n x 2n to split
-         :param size: this size of matrix
-        :return 4 matrices of size n x n
-        """
-        if size == 2:
-            return matrix[0][0], matrix[0][1], matrix[1][0], matrix[1][1]
-        else:
-            matrix_array = self.split_matrix_in_four(matrix, size / 2)
-            return matrix_array[0], matrix_array[1], matrix_array[2], matrix_array[3]
-
     @staticmethod
-    def split_matrix_in_four(matrix, dim):
-        """
-         Split a matrix into four sub-matrices
-         source: https://stackoverflow.com/questions/16856788/slice-2d-array-into-smaller-2d-arrays
-
-         :param matrix the matrix of size 2n x 2n to split
-         :param dim the dimension of the matrix (2n)
-         :return an array 4 matrices of size n x n
-        """
-        h, w = matrix.shape
-        return (matrix.reshape(h // dim, dim, -1, dim)
-                .swapaxes(1, 2)
-                .reshape(-1, dim, dim))
+    def split_int_four(matrix, size):
+        four_matrices = []
+        dsize = int(size/2)
+        for i in range(0, size, dsize):
+            for j in range(0, size, dsize):
+                # split matrix in four square matrices of size size / 2,
+                # following the order of strassen definitions a11, a12, a21, a22
+                four_matrices.append(matrix[i:(dsize + i), j:(dsize + j)])
+        return np.asarray(four_matrices)
 
     def complete_with_zeros(self, m1, m2, size):
         """
@@ -240,19 +227,23 @@ class ComputationService:
 
 
 # if __name__ == '__main__':
-#   matrix_a = np.array([
+#     matrix_a = np.array([
 #       [1, 2, 0, 1],
 #       [3, 4, -1, 1],
 #       [1, 0, 1, 2],
 #       [0, 1, 3, 4]
-#   ])
-#   matrix_b = np.array([
+#     ])
+#     a = np.array([[1, 2], [3, 4]])
+#     matrix_b = np.array([
 #       [1, -1, 0, 1],
 #       [2,  0, 1, 1],
 #       [0, 1, 1, 0],
 #       [1, 0, 0, -1]
-#   ])
-#   strassen = Strassen(matrix_a, matrix_b)
-#   print strassen.get_result(), '\n',\
-#       'Number of multiplications done: ', strassen.counter, '\n',\
-#       'Compute time: ', strassen.elapsed_time
+#     ])
+#     service = ComputationService(matrix_a, matrix_b)
+#     # print matrix_a
+#     # print service.split_int_four(a, 2)
+#     result, strassen_comp_time, strassen_mult_cnt, classical_comp_time, classical_mult_cnt = service.get_result()
+#     print(result)
+#     print('Strassen', '\n', 'Number of multiplications done: ', strassen_mult_cnt, '\n', 'Compute time: ', strassen_comp_time)
+#     print('Classical', '\n', 'Number of multiplications done: ', classical_mult_cnt, '\n', 'Compute time: ', classical_comp_time)

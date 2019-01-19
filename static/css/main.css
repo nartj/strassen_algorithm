@@ -1,5 +1,32 @@
-#container {
-    padding: 2em;
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,100,900);
+* {
+  box-sizing: inherit;
+  transition-property: all;
+  transition-duration: .6s;
+  transition-timing-function: ease;
+}
+
+body {
+    background-color: whitesmoke;
+    height: 100%;
+    font-family: 'Roboto', sans-serif;
+    padding-left: 3em;
+}
+
+h1 {
+  color: #fff;
+  font-size: 10em;
+  font-weight: 900;
+    margin: 0;
+}
+
+form {
+    font-size: 1em;
+}
+
+
+#content {
+    margin: -10px;
     -webkit-flex-wrap: wrap;
     flex-wrap: wrap;
     -ms-box-orient: horizontal;
@@ -9,18 +36,67 @@
     display: -moz-flex;
     display: -webkit-flex;
     display: flex;
+    background-color: whitesmoke;
+    left: 0;
+    width: 100%;
+}
+
+#container {
+    padding: 4em 4em 2em 6em;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-box-orient: horizontal;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -moz-flex;
+    display: -webkit-flex;
+    display: flex;
+    background-color: whitesmoke;
+    left: 0;
+    width: 85%;
+    height: 100%;
 }
 
 #button-container {
     position: fixed;
-    top: 50px;
-    right: 14px;
-    z-index: 1;
+    display: flex;
+    right: 0;
+    background-color: #101010;
+    width: 15%;
+    min-height: 101%;
+    margin: 0;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-row {
+    width: auto;
+    padding-top: 10%;
+}
+
+.btn-item {
+    padding: 0;
+    width: auto;
+    height: auto;
+    margin: 1em;
+    line-height: 100px;
+    color: white;
+    font-weight: bold;
+    font-size: 2em;
+    text-align: center;
 }
 
 .matrix-container {
+    z-index: 1;
     position: relative;
-    padding: 2em;
+    padding: 0.5em;
+    flex-grow: 1;
 }
 
 .symbol {
@@ -47,8 +123,8 @@
 }
 
 .matrix-table-input {
-    min-width: 3.8em;
-    max-width: 3.8em;
+    min-width: 1.8em;
+    max-width: 1.8em;
 }
 
 /* Hide arrows of inputs number */
@@ -66,18 +142,40 @@ input[type=number] {
 }
 
 #statistics {
-    width: 80%;
-    margin-right: 10%;
-    margin-left: auto;
+    padding: 4em 4em 2em 6em;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-box-orient: horizontal;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -moz-flex;
+    display: -webkit-flex;
+    display: flex;
+    background-color: #e3403a;
+    left: 0;
+    width: 85%;
+    min-height: 100%;
+    margin-left: -3%;
 }
 
-.stats-items{
+.stats-items {
     width: 20%;
+    padding: 0.1em 1em 0 1em;
+    margin: 0.5em;
+}
+
+.plot-items {
+    width: 43%;
     padding: 1em;
     margin: 0.5em;
+}
+
+.items {
     -webkit-box-shadow: 0px 3px 12px -4px rgba(8,8,8,0.81);
     -moz-box-shadow: 0px 3px 12px -4px rgba(8,8,8,0.81);
     box-shadow: 0px 3px 12px -4px rgba(8,8,8,0.81);
+    background-color: #fff;
 }
 
 #hidden {
@@ -91,4 +189,63 @@ input[type=number] {
     display: -ms-flexbox;
     display: -moz-flex;
     display: -webkit-flex;
+}
+
+a {
+  background: rgba(255, 255, 255, 0);
+  border-bottom: 1px solid;
+  color: #fff;
+  line-height: 1.4;
+  padding: .25em;
+  text-decoration: none;
+    text-align: center;
+}
+a:hover {
+  background: white;
+  color: #E1332D;
+}
+
+.btn {
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 45px;
+  margin: 0 0 2em;
+  max-width: 160px;
+  position: relative;
+  text-decoration: none;
+  text-transform: uppercase;
+  width: 100%;
+  max-height: 2.8em;
+    padding: 2em;
+    font-family: 'Roboto', sans-serif;
+}
+
+@media (min-width: 600px) {
+  .btn {
+    margin: 0 1em 2em;
+  }
+}
+.btn:hover {
+  text-decoration: none;
+}
+
+.btn-3 {
+  background: #000;
+  border: 1px solid #151515;
+  box-shadow: 0px 2px 0 #151515, 2px 4px 6px #101010;
+  font-weight: 900;
+  letter-spacing: 1px;
+  transition: all 150ms linear;
+}
+
+.btn-3:hover {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.2);
+  color: #000;
+  text-decoration: none;
+  text-shadow: -1px -1px 0 #fff;
+  transition: all 250ms linear;
 }

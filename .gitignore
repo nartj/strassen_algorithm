@@ -1,3 +1,7 @@
 venv/
 .idea/
-.pyc
+*.pyc
+static/*.pyc
+static/__pycache__
+static/services/*.pyc
+static/services/__pycache__
