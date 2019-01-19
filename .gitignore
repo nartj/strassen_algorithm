@@ -6,4 +6,6 @@ static/__pycache__
 static/services/*.pyc
 static/services/__pycache__
 node_modules/
+node_modules/*
+node_modules/ploty.js-dist/
 package-lock.json
