@@ -54,14 +54,14 @@ class ComputationService:
             a, b, new_size = self.complete_with_zeros(a, b, a_size)
             a_size = new_size
 
-        print('Request for computing', a_size, 'x', a_size, 'matrices multiplication.')
+        print 'Request for computing', a_size, 'x', a_size, 'matrices multiplication.'
 
         # Compute result matrix using strassen algorithm implementation
         start_time = time.time()
         result = self.compute_using_strassen(a, b)
 
         self.strassen_comp_time = time.time() - start_time
-        print('Strassen computation realised in', self.strassen_comp_time, 'seconds.')
+        print 'Strassen computation realised in', self.strassen_comp_time, 'seconds.'
 
         # Remove added zeros rows and columns before starting classical algorithm
         if new_size != 0:
@@ -76,12 +76,10 @@ class ComputationService:
         result = self.classical_compute(a, b)
 
         self.classical_comp_time = time.time() - start_time
-        print('Classical computation realised in', self.classical_comp_time, 'seconds.')
+        print 'Classical computation realised in', self.classical_comp_time, 'seconds.'
 
         # Result verification
         if not (result == self.result).all():
-            print(self.result)
-            print(result)
             return "Error: classical and strassen algorithm returned different results."
 
         return result
@@ -244,6 +242,57 @@ class ComputationService:
 #     # print matrix_a
 #     # print service.split_int_four(a, 2)
 #     result, strassen_comp_time, strassen_mult_cnt, classical_comp_time, classical_mult_cnt = service.get_result()
-#     print(result)
-#     print('Strassen', '\n', 'Number of multiplications done: ', strassen_mult_cnt, '\n', 'Compute time: ', strassen_comp_time)
-#     print('Classical', '\n', 'Number of multiplications done: ', classical_mult_cnt, '\n', 'Compute time: ', classical_comp_time)
+#     print result
+#     print 'Strassen', '\n', 'Number of multiplications done: ', strassen_mult_cnt, '\n', 'Compute time: ', strassen_comp_time
+#     print 'Classical', '\n', 'Number of multiplications done: ', classical_mult_cnt, '\n', 'Compute time: ', classical_comp_time
+#
+#     # Matrix seen in class
+#     matrix_a = np.array([
+#         [1, 2, 0, 1],
+#         [3, 4, -1, 1],
+#         [1, 0, 1, 2],
+#         [0, 1, 3, 4]
+#     ])
+#     # Matrix seen in class
+#     matrix_b = np.array([
+#         [1, -1, 0, 1],
+#         [2, 0, 1, 1],
+#         [0, 1, 1, 0],
+#         [1, 0, 0, -1]
+#     ])
+#     # Call computation service
+#     service = ComputationService(matrix_a, matrix_b)
+#
+#     result, strassen_comp_time, strassen_mult_cnt, classical_comp_time, classical_mult_cnt = service.get_result()
+#     # Print result for verification
+#     print 'Number of multiplications done: '
+#     print 'Classical:', classical_mult_cnt, '\n', 'Strassen: ', strassen_mult_cnt
+#     print 'Result for matrices seen in class', result
+#
+#     # Benchmark
+#     print '\n', '##### BENCHMARK FROM 2 TO 32, OFFSET: 2'
+#     for i in range(2, 33, 2):
+#         matrix_a = np.random.rand(i, i)
+#         matrix_b = np.random.rand(i, i)
+#         service = ComputationService(matrix_a, matrix_b)
+#         result, strassen_comp_time, strassen_mult_cnt, classical_comp_time, classical_mult_cnt = service.get_result()
+#         print 'Number of multiplications done: '
+#         print 'Classical:', classical_mult_cnt, '\n', 'Strassen: ', strassen_mult_cnt
+#
+#     print '\n', '##### BENCHMARK FROM 64 AND 128'
+#     for i in range(64, 129, 128):
+#         matrix_a = np.random.rand(i, i)
+#         matrix_b = np.random.rand(i, i)
+#         service = ComputationService(matrix_a, matrix_b)
+#         result, strassen_comp_time, strassen_mult_cnt, classical_comp_time, classical_mult_cnt = service.get_result()
+#         print 'Number of multiplications done: '
+#         print 'Classical:', classical_mult_cnt, '\n', 'Strassen: ', strassen_mult_cnt
+#
+#     print '\n', '##### BENCHMARK FROM 256 AND 512'
+#     for i in range(256, 513, 256):
+#         matrix_a = np.random.rand(i, i)
+#         matrix_b = np.random.rand(i, i)
+#         service = ComputationService(matrix_a, matrix_b)
+#         result, strassen_comp_time, strassen_mult_cnt, classical_comp_time, classical_mult_cnt = service.get_result()
+#         print 'Number of multiplications done: '
+#         print 'Classical:', classical_mult_cnt, '\n', 'Strassen: ', strassen_mult_cnt

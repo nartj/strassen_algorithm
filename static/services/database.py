@@ -8,7 +8,7 @@ class Database:
         try:
             self.create_table()
         except Exception:
-            self.error_message = "Error while connecting to database"
+            self.error_message = "Error while creating statistics table. Maybe it already exists or you cannot connect to database"
             print(self.error_message)
 
     @staticmethod
