@@ -1,10 +1,12 @@
 # Strassen algorithm demo app (MT79)
-Web application demonstrating a python implementation of Strassen algorithm (square matrices multiplication)
-Use Flask python micro-framework as built-in server
+- Web application demonstrating a python implementation of Strassen algorithm (square matrices multiplication)
+- Use Flask python micro-framework as built-in server
+- Use plotly.js to render statistics
+- Use sqlite3 and database.db as portable statistics storage
 
 # Getting started
 * Prerequisite
-    - Python 2.7 or later version
+    - Python 2.7
     
 * Install and run
     - Clone the repository
